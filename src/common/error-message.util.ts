@@ -1,3 +1,6 @@
+import { NotFoundException } from '@nestjs/common';
+import { Prisma } from '../../generated/prisma';
+
 export class ErrorMessageUtil {
   static badRequest() {
     return 'Bad request';
@@ -19,6 +22,14 @@ export class ErrorMessageUtil {
     return 'Conflict';
   }
 
+  static conflictEntity(entity?: string) {
+    if (entity && entity.trim().length > 0) {
+      return `${entity} already exists`;
+    }
+
+    return this.conflict();
+  }
+
   static internalServerError() {
     return 'Internal server error';
   }
@@ -37,6 +48,15 @@ export class ErrorMessageUtil {
         return this.conflict();
       default:
         return this.internalServerError();
+    }
+  }
+
+  static throwNotFoundIfPrismaError(error: unknown, entity = 'Resource'): void {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2025'
+    ) {
+      throw new NotFoundException(this.notFound(entity));
     }
   }
 }

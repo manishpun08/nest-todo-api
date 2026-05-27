@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ErrorMessageUtil } from '../common/error-message.util';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '../../generated/prisma';
 
 @Injectable()
 export class TodosService {
   constructor(private prisma: PrismaService) {}
+
   create(createTodoDto: CreateTodoDto) {
     return this.prisma.todo.create({
       data: createTodoDto,
@@ -23,7 +24,7 @@ export class TodosService {
     });
 
     if (!todo) {
-      throw new NotFoundException(`Todo with id ${id} not found`);
+      throw new NotFoundException(ErrorMessageUtil.notFound('Todo'));
     }
 
     return todo;
@@ -36,7 +37,7 @@ export class TodosService {
         data: updateTodoDto,
       });
     } catch (error) {
-      this.throwNotFoundIfMissingTodo(error, id);
+      ErrorMessageUtil.throwNotFoundIfPrismaError(error, 'Todo');
       throw error;
     }
   }
@@ -47,17 +48,8 @@ export class TodosService {
         where: { id },
       });
     } catch (error) {
-      this.throwNotFoundIfMissingTodo(error, id);
+      ErrorMessageUtil.throwNotFoundIfPrismaError(error, 'Todo');
       throw error;
-    }
-  }
-
-  private throwNotFoundIfMissingTodo(error: unknown, id: number): void {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025'
-    ) {
-      throw new NotFoundException(`Todo with id ${id} not found`);
     }
   }
 }
