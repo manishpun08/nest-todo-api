@@ -18,7 +18,7 @@ export class TodosService {
     return await this.prisma.todo.findMany();
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const todo = await this.prisma.todo.findUnique({
       where: { id },
     });
@@ -30,7 +30,7 @@ export class TodosService {
     return todo;
   }
 
-  async update(id: number, updateTodoDto: UpdateTodoDto) {
+  async update(id: string, updateTodoDto: UpdateTodoDto) {
     try {
       return await this.prisma.todo.update({
         where: { id },
@@ -42,7 +42,7 @@ export class TodosService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     try {
       return await this.prisma.todo.delete({
         where: { id },
