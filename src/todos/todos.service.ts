@@ -1,5 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ErrorMessageUtil } from '../common/error-message.util';
+import { QueryDto } from '../common/query.dto';
+import { buildPrismaQuery } from '../common/query.util';
+import { Prisma } from '../../generated/prisma';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -14,8 +17,18 @@ export class TodosService {
     });
   }
 
-  async findAll() {
-    return await this.prisma.todo.findMany();
+  async findAll(query?: QueryDto) {
+    const { where, orderBy } = buildPrismaQuery(query, [
+      'title',
+      'description',
+    ]);
+
+    const args: Prisma.TodoFindManyArgs = {
+      where,
+      orderBy,
+    };
+
+    return await this.prisma.todo.findMany(args);
   }
 
   async findOne(id: string) {
@@ -38,7 +51,8 @@ export class TodosService {
       });
     } catch (error) {
       ErrorMessageUtil.throwNotFoundIfPrismaError(error, 'Todo');
-      throw error;
+      if (error instanceof Error) throw error;
+      throw new Error(String(error));
     }
   }
 
@@ -49,7 +63,8 @@ export class TodosService {
       });
     } catch (error) {
       ErrorMessageUtil.throwNotFoundIfPrismaError(error, 'Todo');
-      throw error;
+      if (error instanceof Error) throw error;
+      throw new Error(String(error));
     }
   }
 }

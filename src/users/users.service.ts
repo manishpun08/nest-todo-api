@@ -8,6 +8,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Prisma } from '../../generated/prisma';
 import { ErrorMessageUtil } from '../common/error-message.util';
+import { QueryDto } from '../common/query.dto';
+import { buildPrismaQuery } from '../common/query.util';
 
 @Injectable()
 export class UsersService {
@@ -31,8 +33,9 @@ export class UsersService {
     }
   }
 
-  async findAll() {
-    return await this.prisma.user.findMany();
+  async findAll(query?: QueryDto) {
+    const { where, orderBy } = buildPrismaQuery(query, ['name', 'email']);
+    return await this.prisma.user.findMany({ where, orderBy } as any);
   }
 
   async findOne(id: string) {

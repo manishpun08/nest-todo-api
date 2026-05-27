@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { QueryDto } from '../common/query.dto';
 
 @Controller('todos')
 export class TodosController {
@@ -22,8 +24,8 @@ export class TodosController {
   }
 
   @Get()
-  async findAll() {
-    const result = await this.todosService.findAll();
+  async findAll(@Query() query: QueryDto) {
+    const result = await this.todosService.findAll(query);
     return result;
   }
 
