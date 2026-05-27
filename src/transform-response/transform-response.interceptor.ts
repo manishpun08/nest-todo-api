@@ -14,6 +14,7 @@ type SuccessResponse = {
   statusCode: number | undefined;
   message: string;
   data?: unknown;
+  meta?: unknown;
 };
 
 @Injectable()
@@ -29,12 +30,22 @@ export class TransformResponseInterceptor implements NestInterceptor {
     const entity = this.getEntityName(request.url);
 
     return next.handle().pipe(
-      map((data: unknown) => ({
-        success: true,
-        statusCode: res.statusCode,
-        message: this.getMessage(request.method, entity, data),
-        ...(request.method === 'DELETE' ? {} : { data }),
-      })),
+      map((response: any) => {
+        const isPaginated =
+          response &&
+          response.items !== undefined &&
+          response.meta !== undefined;
+        const data = isPaginated ? response.items : response;
+        const meta = isPaginated ? response.meta : undefined;
+
+        return {
+          success: true,
+          statusCode: res.statusCode,
+          message: this.getMessage(request.method, entity, data),
+          ...(request.method === 'DELETE' ? {} : { data }),
+          ...(meta ? { meta } : {}),
+        };
+      }),
     );
   }
 

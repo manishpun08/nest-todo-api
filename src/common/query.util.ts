@@ -17,5 +17,10 @@ export function buildPrismaQuery(
     orderBy = { [query.sortBy]: query.order ?? 'asc' };
   }
 
-  return { where, orderBy };
+  const page = Number(query?.page) || 1;
+  const limit = Number(query?.limit) || 10;
+  const skip = (page - 1) * limit;
+  const take = limit;
+
+  return { where, orderBy, skip, take, page, limit };
 }

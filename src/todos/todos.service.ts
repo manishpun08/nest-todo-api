@@ -18,17 +18,30 @@ export class TodosService {
   }
 
   async findAll(query?: QueryDto) {
-    const { where, orderBy } = buildPrismaQuery(query, [
-      'title',
-      'description',
+    const { where, orderBy, skip, take, page, limit } = buildPrismaQuery(
+      query,
+      ['title', 'description'],
+    );
+
+    const [items, total] = await Promise.all([
+      this.prisma.todo.findMany({
+        where,
+        orderBy,
+        skip,
+        take,
+      }),
+      this.prisma.todo.count({ where }),
     ]);
 
-    const args: Prisma.TodoFindManyArgs = {
-      where,
-      orderBy,
+    return {
+      items,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
     };
-
-    return await this.prisma.todo.findMany(args);
   }
 
   async findOne(id: string) {

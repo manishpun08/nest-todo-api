@@ -34,8 +34,30 @@ export class UsersService {
   }
 
   async findAll(query?: QueryDto) {
-    const { where, orderBy } = buildPrismaQuery(query, ['name', 'email']);
-    return await this.prisma.user.findMany({ where, orderBy } as any);
+    const { where, orderBy, skip, take, page, limit } = buildPrismaQuery(
+      query,
+      ['name', 'email'],
+    );
+
+    const [items, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where,
+        orderBy,
+        skip,
+        take,
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+
+    return {
+      items,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: string) {
