@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Prisma } from '../../generated/prisma';
+import { Prisma, User } from '../../generated/prisma';
 import { ErrorMessageUtil } from '../common/error-message.util';
 import { QueryDto } from '../common/query.dto';
 import { buildPrismaQuery } from '../common/query.util';
@@ -21,21 +21,22 @@ export class UsersService {
       const { password, ...userData } = createUserDto;
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      return await this.prisma.user.create({
+      const result = await this.prisma.user.create({
         data: {
           ...userData,
           password: hashedPassword,
         },
       });
+
+      const { password: _p, refreshToken: _rt, ...user } = result;
+      return user;
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        // Unique constraint failed
         throw new ConflictException(ErrorMessageUtil.conflictEntity('Email'));
       }
-
       throw error;
     }
   }
@@ -52,6 +53,12 @@ export class UsersService {
         orderBy,
         skip,
         take,
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+        },
       }),
       this.prisma.user.count({ where }),
     ]);
@@ -76,10 +83,17 @@ export class UsersService {
       throw new NotFoundException(ErrorMessageUtil.notFound('User'));
     }
 
-    return user;
+    const { password: _p, refreshToken: _rt, ...result } = user;
+    return result;
   }
 
-  async findByEmail(email: string) {
+  async findById(id: string): Promise<User | null> {
+    return await this.prisma.user.findUnique({
+      where: { id },
+    });
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
     return await this.prisma.user.findUnique({
       where: { email },
     });
@@ -87,10 +101,12 @@ export class UsersService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-      return await this.prisma.user.update({
+      const user = await this.prisma.user.update({
         where: { id },
         data: updateUserDto,
       });
+      const { password: _p, refreshToken: _rt, ...result } = user;
+      return result;
     } catch (error) {
       ErrorMessageUtil.throwNotFoundIfPrismaError(error, 'User');
       throw error;

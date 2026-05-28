@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   async refreshTokens(userId: string, refreshToken: string) {
-    const user = await this.usersService.findOne(userId);
+    const user = await this.usersService.findById(userId);
     if (!user || !user.refreshToken) {
       throw new UnauthorizedException('Access Denied');
     }
@@ -100,9 +100,6 @@ export class AuthService {
   }
 
   async register(dto: RegisterDto) {
-    const user = await this.usersService.create(dto);
-    const { password: _p, refreshToken: _rt, ...result } = user;
-
-    return result;
+    return await this.usersService.create(dto);
   }
 }
