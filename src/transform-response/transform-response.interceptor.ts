@@ -4,10 +4,12 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { Response } from 'express';
 import { map } from 'rxjs/operators';
 import { SuccessMessageUtil } from '../common/message.util';
+import { ENTITY_KEY, MESSAGE_KEY } from '../common/decorators/entity.decorator';
 
 type SuccessResponse = {
   success: true;
@@ -17,8 +19,15 @@ type SuccessResponse = {
   meta?: unknown;
 };
 
+interface PaginatedResponse {
+  items: unknown[];
+  meta: unknown;
+}
+
 @Injectable()
 export class TransformResponseInterceptor implements NestInterceptor {
+  constructor(private reflector: Reflector) {}
+
   intercept(
     context: ExecutionContext,
     next: CallHandler,
@@ -27,21 +36,37 @@ export class TransformResponseInterceptor implements NestInterceptor {
       .switchToHttp()
       .getRequest<{ method: string; url: string }>();
     const res = context.switchToHttp().getResponse<Response>();
-    const entity = this.getEntityName(request.url);
+
+    const metadataEntity = this.reflector.get<string>(
+      ENTITY_KEY,
+      context.getHandler(),
+    );
+    const metadataMessage = this.reflector.get<string>(
+      MESSAGE_KEY,
+      context.getHandler(),
+    );
+    const entity = metadataEntity || this.getEntityName(request.url);
 
     return next.handle().pipe(
-      map((response: any) => {
+      map((response: unknown) => {
         const isPaginated =
           response &&
-          response.items !== undefined &&
-          response.meta !== undefined;
-        const data = isPaginated ? response.items : response;
-        const meta = isPaginated ? response.meta : undefined;
+          typeof response === 'object' &&
+          'items' in response &&
+          'meta' in response;
+
+        const data = isPaginated
+          ? (response as PaginatedResponse).items
+          : response;
+        const meta = isPaginated
+          ? (response as PaginatedResponse).meta
+          : undefined;
 
         return {
           success: true,
           statusCode: res.statusCode,
-          message: this.getMessage(request.method, entity, data),
+          message:
+            metadataMessage || this.getMessage(request.method, entity, data),
           ...(request.method === 'DELETE' ? {} : { data }),
           ...(meta ? { meta } : {}),
         };

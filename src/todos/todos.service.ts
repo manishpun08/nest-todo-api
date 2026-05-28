@@ -2,10 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ErrorMessageUtil } from '../common/error-message.util';
 import { QueryDto } from '../common/query.dto';
 import { buildPrismaQuery } from '../common/query.util';
-import { Prisma } from '../../generated/prisma';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
-import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class TodosService {

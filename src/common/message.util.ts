@@ -3,6 +3,10 @@ export class SuccessMessageUtil {
     return `${entity} created successfully`;
   }
 
+  static login(entity: string) {
+    return `${entity} logged in successfully`;
+  }
+
   static updated(entity: string) {
     return `${entity} updated successfully`;
   }

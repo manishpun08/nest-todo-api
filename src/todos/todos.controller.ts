@@ -8,13 +8,16 @@ import {
   Delete,
   ParseUUIDPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { QueryDto } from '../common/query.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('todos')
+@UseGuards(JwtAuthGuard)
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 

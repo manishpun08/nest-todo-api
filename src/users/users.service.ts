@@ -3,6 +3,7 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -17,8 +18,14 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
+      const { password, ...userData } = createUserDto;
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       return await this.prisma.user.create({
-        data: createUserDto,
+        data: {
+          ...userData,
+          password: hashedPassword,
+        },
       });
     } catch (error) {
       if (
@@ -72,6 +79,12 @@ export class UsersService {
     return user;
   }
 
+  async findByEmail(email: string) {
+    return await this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
       return await this.prisma.user.update({
@@ -93,5 +106,16 @@ export class UsersService {
       ErrorMessageUtil.throwNotFoundIfPrismaError(error, 'User');
       throw error;
     }
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string | null) {
+    let hashedToken: string | null = null;
+    if (refreshToken) {
+      hashedToken = await bcrypt.hash(refreshToken, 10);
+    }
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: hashedToken },
+    });
   }
 }

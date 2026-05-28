@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import 'dotenv/config';
@@ -13,7 +13,8 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
-  app.useGlobalInterceptors(new TransformResponseInterceptor());
+  const reflector = app.get(Reflector);
+  app.useGlobalInterceptors(new TransformResponseInterceptor(reflector));
   app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(process.env.PORT ?? 3000);
 }
