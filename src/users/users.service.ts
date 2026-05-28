@@ -4,28 +4,25 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../prisma/prisma.service';
+import { UsersRepository } from './users.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Prisma, User } from '../../generated/prisma';
 import { ErrorMessageUtil } from '../common/error-message.util';
 import { QueryDto } from '../common/query.dto';
-import { buildPrismaQuery } from '../common/query.util';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private repository: UsersRepository) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
       const { password, ...userData } = createUserDto;
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const result = await this.prisma.user.create({
-        data: {
-          ...userData,
-          password: hashedPassword,
-        },
+      const result = await this.repository.create({
+        ...userData,
+        password: hashedPassword,
       });
 
       const { password: _p, refreshToken: _rt, ...user } = result;
@@ -42,42 +39,19 @@ export class UsersService {
   }
 
   async findAll(query?: QueryDto) {
-    const { where, orderBy, skip, take, page, limit } = buildPrismaQuery(
-      query,
-      ['name', 'email'],
-    );
-
-    const [items, total] = await Promise.all([
-      this.prisma.user.findMany({
-        where,
-        orderBy,
-        skip,
-        take,
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          createdAt: true,
-        },
-      }),
-      this.prisma.user.count({ where }),
-    ]);
-
+    const result = await this.repository.findAll(query);
+    
     return {
-      items,
-      meta: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
+      items: result.items.map((u: User) => {
+        const { password: _p, refreshToken: _rt, ...user } = u;
+        return user;
+      }),
+      meta: result.meta,
     };
   }
 
   async findOne(id: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-    });
+    const user = await this.repository.findOne(id);
 
     if (!user) {
       throw new NotFoundException(ErrorMessageUtil.notFound('User'));
@@ -88,23 +62,16 @@ export class UsersService {
   }
 
   async findById(id: string): Promise<User | null> {
-    return await this.prisma.user.findUnique({
-      where: { id },
-    });
+    return this.repository.findOne(id);
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.prisma.user.findUnique({
-      where: { email },
-    });
+    return this.repository.findByEmail(email);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-      const user = await this.prisma.user.update({
-        where: { id },
-        data: updateUserDto,
-      });
+      const user = await this.repository.update(id, updateUserDto);
       const { password: _p, refreshToken: _rt, ...result } = user;
       return result;
     } catch (error) {
@@ -115,9 +82,7 @@ export class UsersService {
 
   async remove(id: string) {
     try {
-      return await this.prisma.user.delete({
-        where: { id },
-      });
+      return await this.repository.remove(id);
     } catch (error) {
       ErrorMessageUtil.throwNotFoundIfPrismaError(error, 'User');
       throw error;
@@ -129,9 +94,6 @@ export class UsersService {
     if (refreshToken) {
       hashedToken = await bcrypt.hash(refreshToken, 10);
     }
-    return await this.prisma.user.update({
-      where: { id: userId },
-      data: { refreshToken: hashedToken },
-    });
+    return await this.repository.update(userId, { refreshToken: hashedToken });
   }
 }
