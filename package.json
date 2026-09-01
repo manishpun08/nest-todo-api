@@ -7,6 +7,10 @@
     "mobile-app"
   ],
   "scripts": {
+    "start": "npm run start:dev -w backend",
+    "start:dev": "npm run start:dev -w backend",
+    "start:backend": "npm run start:dev -w backend",
+    "start:mobile": "npm run start -w mobile-app",
     "dev:backend": "npm run start:dev -w backend",
     "dev:mobile": "npm run start -w mobile-app",
     "build:backend": "npm run build -w backend",

@@ -29,8 +29,8 @@ export declare class AuthService {
     }>;
     register(dto: RegisterDto): Promise<{
         name: string;
-        email: string;
         id: string;
+        email: string;
         createdAt: Date;
     }>;
 }

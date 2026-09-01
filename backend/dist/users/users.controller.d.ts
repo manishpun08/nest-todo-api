@@ -7,15 +7,15 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     create(createUserDto: CreateUserDto): Promise<{
         name: string;
-        email: string;
         id: string;
+        email: string;
         createdAt: Date;
     }>;
     findAll(query: QueryDto): Promise<{
         items: {
             name: string;
-            email: string;
             id: string;
+            email: string;
             createdAt: Date;
         }[];
         meta: {
@@ -27,21 +27,21 @@ export declare class UsersController {
     }>;
     findOne(id: string): Promise<{
         name: string;
-        email: string;
         id: string;
+        email: string;
         createdAt: Date;
     }>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
         name: string;
-        email: string;
         id: string;
+        email: string;
         createdAt: Date;
     }>;
     remove(id: string): Promise<{
         name: string;
+        id: string;
         email: string;
         password: string;
-        id: string;
         refreshToken: string | null;
         createdAt: Date;
     }>;
