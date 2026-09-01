@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TransformResponseInterceptor = void 0;
 const common_1 = require("@nestjs/common");
+const core_1 = require("@nestjs/core");
 const operators_1 = require("rxjs/operators");
 const entity_decorator_1 = require("../common/decorators/entity.decorator");
 const message_util_1 = require("../common/message.util");
@@ -65,6 +66,6 @@ let TransformResponseInterceptor = class TransformResponseInterceptor {
 exports.TransformResponseInterceptor = TransformResponseInterceptor;
 exports.TransformResponseInterceptor = TransformResponseInterceptor = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [core_1.Reflector])
 ], TransformResponseInterceptor);
 //# sourceMappingURL=transform-response.interceptor.js.map

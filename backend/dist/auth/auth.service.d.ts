@@ -1,7 +1,7 @@
-import type { ConfigService } from '@nestjs/config';
-import type { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import type { User } from '../../generated/prisma';
-import type { UsersService } from '../users/users.service';
+import { UsersService } from '../users/users.service';
 import type { RegisterDto } from './dto/register.dto';
 export declare class AuthService {
     private usersService;
@@ -29,8 +29,8 @@ export declare class AuthService {
     }>;
     register(dto: RegisterDto): Promise<{
         name: string;
-        id: string;
         email: string;
+        id: string;
         createdAt: Date;
     }>;
 }

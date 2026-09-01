@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RefreshTokenStrategy = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
 const passport_1 = require("@nestjs/passport");
 const passport_jwt_1 = require("passport-jwt");
 let RefreshTokenStrategy = class RefreshTokenStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy, 'jwt-refresh') {
@@ -36,6 +37,6 @@ let RefreshTokenStrategy = class RefreshTokenStrategy extends (0, passport_1.Pas
 exports.RefreshTokenStrategy = RefreshTokenStrategy;
 exports.RefreshTokenStrategy = RefreshTokenStrategy = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [config_1.ConfigService])
 ], RefreshTokenStrategy);
 //# sourceMappingURL=refresh-token.strategy.js.map

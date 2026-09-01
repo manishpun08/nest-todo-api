@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersRepository = void 0;
 const common_1 = require("@nestjs/common");
 const query_util_1 = require("../common/query.util");
+const prisma_service_1 = require("../prisma/prisma.service");
 let UsersRepository = class UsersRepository {
     prisma;
     constructor(prisma) {
@@ -66,6 +67,6 @@ let UsersRepository = class UsersRepository {
 exports.UsersRepository = UsersRepository;
 exports.UsersRepository = UsersRepository = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], UsersRepository);
 //# sourceMappingURL=users.repository.js.map

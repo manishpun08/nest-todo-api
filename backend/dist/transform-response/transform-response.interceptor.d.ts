@@ -1,5 +1,5 @@
 import { type CallHandler, type ExecutionContext, type NestInterceptor } from '@nestjs/common';
-import type { Reflector } from '@nestjs/core';
+import { Reflector } from '@nestjs/core';
 import type { Observable } from 'rxjs';
 type SuccessResponse = {
     success: true;

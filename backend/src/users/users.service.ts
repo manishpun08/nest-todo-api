@@ -5,7 +5,7 @@ import { ErrorMessageUtil } from '../common/error-message.util';
 import type { QueryDto } from '../common/query.dto';
 import type { CreateUserDto } from './dto/create-user.dto';
 import type { UpdateUserDto } from './dto/update-user.dto';
-import type { UsersRepository } from './users.repository';
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {

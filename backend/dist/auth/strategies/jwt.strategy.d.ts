@@ -1,4 +1,4 @@
-import type { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { Strategy } from 'passport-jwt';
 interface JwtPayload {
     sub: string;

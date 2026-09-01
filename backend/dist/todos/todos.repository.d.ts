@@ -1,7 +1,7 @@
 import type { Prisma, Todo } from '../../generated/prisma';
 import type { PaginatedResult } from '../common/base.repository';
 import type { QueryDto } from '../common/query.dto';
-import type { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 export declare class TodosRepository {
     private prisma;
     constructor(prisma: PrismaService);

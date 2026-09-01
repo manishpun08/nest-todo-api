@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TodosController = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const todos_service_1 = require("./todos.service");
 let TodosController = class TodosController {
     todosService;
     constructor(todosService) {
@@ -77,6 +78,6 @@ __decorate([
 exports.TodosController = TodosController = __decorate([
     (0, common_1.Controller)('todos'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [todos_service_1.TodosService])
 ], TodosController);
 //# sourceMappingURL=todos.controller.js.map

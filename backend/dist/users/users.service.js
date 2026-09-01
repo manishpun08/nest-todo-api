@@ -47,6 +47,7 @@ const common_1 = require("@nestjs/common");
 const bcrypt = __importStar(require("bcrypt"));
 const prisma_1 = require("../../generated/prisma");
 const error_message_util_1 = require("../common/error-message.util");
+const users_repository_1 = require("./users.repository");
 let UsersService = class UsersService {
     repository;
     constructor(repository) {
@@ -125,6 +126,6 @@ let UsersService = class UsersService {
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [users_repository_1.UsersRepository])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TodosRepository = void 0;
 const common_1 = require("@nestjs/common");
 const query_util_1 = require("../common/query.util");
+const prisma_service_1 = require("../prisma/prisma.service");
 let TodosRepository = class TodosRepository {
     prisma;
     constructor(prisma) {
@@ -64,6 +65,6 @@ let TodosRepository = class TodosRepository {
 exports.TodosRepository = TodosRepository;
 exports.TodosRepository = TodosRepository = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], TodosRepository);
 //# sourceMappingURL=todos.repository.js.map

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TodosService = void 0;
 const common_1 = require("@nestjs/common");
 const error_message_util_1 = require("../common/error-message.util");
+const todos_repository_1 = require("./todos.repository");
 let TodosService = class TodosService {
     repository;
     constructor(repository) {
@@ -52,6 +53,6 @@ let TodosService = class TodosService {
 exports.TodosService = TodosService;
 exports.TodosService = TodosService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [Function])
+    __metadata("design:paramtypes", [todos_repository_1.TodosRepository])
 ], TodosService);
 //# sourceMappingURL=todos.service.js.map

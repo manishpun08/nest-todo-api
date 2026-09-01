@@ -1,7 +1,7 @@
 import type { QueryDto } from '../common/query.dto';
 import type { CreateTodoDto } from './dto/create-todo.dto';
 import type { UpdateTodoDto } from './dto/update-todo.dto';
-import type { TodosRepository } from './todos.repository';
+import { TodosRepository } from './todos.repository';
 export declare class TodosService {
     private repository;
     constructor(repository: TodosRepository);

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
 import type { User } from '../../generated/prisma';
 import { Entity, Message } from '../common/decorators/entity.decorator';
-import type { AuthService } from './auth.service';
+import { AuthService } from './auth.service';
 import type { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';

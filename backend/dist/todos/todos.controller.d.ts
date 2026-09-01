@@ -1,7 +1,7 @@
 import type { QueryDto } from '../common/query.dto';
 import type { CreateTodoDto } from './dto/create-todo.dto';
 import type { UpdateTodoDto } from './dto/update-todo.dto';
-import type { TodosService } from './todos.service';
+import { TodosService } from './todos.service';
 export declare class TodosController {
     private readonly todosService;
     constructor(todosService: TodosService);

@@ -3,7 +3,7 @@ import type { Prisma, User } from '../../generated/prisma';
 import type { PaginatedResult } from '../common/base.repository';
 import type { QueryDto } from '../common/query.dto';
 import { buildPrismaQuery } from '../common/query.util';
-import type { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersRepository {
