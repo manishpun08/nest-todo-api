@@ -73,7 +73,8 @@ export function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
       }}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
         style={{ flex: 1 }}
       >
         <ScrollView
@@ -81,35 +82,37 @@ export function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
             flexGrow: 1,
             justifyContent: 'center',
             paddingHorizontal: 24,
-            paddingVertical: 32,
+            paddingTop: 20,
+            paddingBottom: 48,
           }}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
           {/* Header Branding */}
-          <View style={{ alignItems: 'center', marginBottom: 32 }}>
+          <View style={{ alignItems: 'center', marginBottom: 28 }}>
             <View
               style={{
-                width: 72,
-                height: 72,
+                width: 68,
+                height: 68,
                 borderRadius: 22,
                 backgroundColor: isDark ? 'rgba(37, 99, 235, 0.2)' : '#EFF6FF',
                 borderWidth: 1.5,
                 borderColor: isDark ? 'rgba(37, 99, 235, 0.4)' : '#BFDBFE',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: 16,
+                marginBottom: 14,
               }}
             >
-              <UserPlus size={36} color="#2563EB" strokeWidth={2.2} />
+              <UserPlus size={34} color="#2563EB" strokeWidth={2.2} />
             </View>
 
             <Typography
               variant="h1"
               style={{
-                fontSize: 28,
+                fontSize: 26,
                 fontWeight: '800',
                 color: isDark ? '#FFFFFF' : '#0F172A',
-                marginBottom: 8,
+                marginBottom: 6,
               }}
             >
               Create Account
@@ -117,7 +120,7 @@ export function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
             <Typography
               variant="body"
               style={{
-                fontSize: 15,
+                fontSize: 14,
                 color: isDark ? '#94A3B8' : '#64748B',
                 textAlign: 'center',
               }}
@@ -127,7 +130,7 @@ export function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
           </View>
 
           {/* Register Card */}
-          <Card style={{ padding: 22 }}>
+          <Card style={{ padding: 20 }}>
             {validationError || registerError ? (
               <View
                 style={{
@@ -168,7 +171,7 @@ export function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
             <Input
               label="Password (min. 6 characters)"
               placeholder="••••••••"
-              secureTextEntry
+              isPassword
               value={password}
               onChangeText={setPassword}
               leftIcon={<Lock size={18} color={isDark ? '#64748B' : '#94A3B8'} />}
@@ -178,7 +181,7 @@ export function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
               label="Create Account"
               onPress={handleRegister}
               isLoading={isRegistering}
-              style={{ marginTop: 10 }}
+              style={{ marginTop: 6 }}
             />
           </Card>
 

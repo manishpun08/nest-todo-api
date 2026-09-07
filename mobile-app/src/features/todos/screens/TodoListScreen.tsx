@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Input } from '@/components/ui/Input';
 import { Typography } from '@/components/ui/Typography';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -32,6 +33,21 @@ export function TodoListScreen() {
   const [newDescription, setNewDescription] = useState('');
   const [filter, setFilter] = useState<FilterStatus>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const handleLogoutPress = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    setShowLogoutConfirm(false);
+    try {
+      await logout();
+      toast.showInfo('You have been successfully signed out.', 'Signed Out');
+    } catch {
+      toast.showError('Could not complete sign out', 'Notice');
+    }
+  };
 
   const handleCreate = async () => {
     if (!newTitle.trim()) return;
@@ -153,7 +169,7 @@ export function TodoListScreen() {
 
                 {user ? (
                   <TouchableOpacity
-                    onPress={logout}
+                    onPress={handleLogoutPress}
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
@@ -291,6 +307,18 @@ export function TodoListScreen() {
           }
         />
       </KeyboardAvoidingView>
+
+      {/* Logout Confirmation Dialog */}
+      <ConfirmDialog
+        visible={showLogoutConfirm}
+        title="Sign Out"
+        message="Are you sure you want to sign out of your account? You will need to log in again to access your tasks."
+        confirmText="Sign Out"
+        cancelText="Stay Signed In"
+        isDestructive
+        onConfirm={handleConfirmLogout}
+        onCancel={() => setShowLogoutConfirm(false)}
+      />
     </SafeAreaView>
   );
 }
