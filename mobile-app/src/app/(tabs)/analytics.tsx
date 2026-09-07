@@ -1,6 +1,6 @@
 import { Award, CheckCircle2, Clock, Flame, Target, TrendingUp } from 'lucide-react-native';
 import { useMemo } from 'react';
-import { ScrollView, Text, useColorScheme, View } from 'react-native';
+import { RefreshControl, ScrollView, Text, useColorScheme, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card } from '@/components/ui/Card';
 import { Typography } from '@/components/ui/Typography';
@@ -8,7 +8,7 @@ import { useTodos } from '@/features/todos/hooks/useTodos';
 
 export default function AnalyticsScreen() {
   const isDark = useColorScheme() === 'dark';
-  const { todos } = useTodos();
+  const { todos, isRefetching, refetch } = useTodos();
 
   const stats = useMemo(() => {
     const total = todos.length;
@@ -32,6 +32,14 @@ export default function AnalyticsScreen() {
           paddingBottom: 40,
         }}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching}
+            onRefresh={refetch}
+            tintColor="#3B82F6"
+            colors={['#3B82F6']}
+          />
+        }
       >
         {/* Screen Header */}
         <View style={{ marginBottom: 20 }}>

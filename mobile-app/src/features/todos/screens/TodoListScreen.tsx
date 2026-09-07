@@ -1,10 +1,10 @@
 import { CheckCircle2, LogOut, Plus, Sparkles } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import {
-  ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Platform,
+  RefreshControl,
   Text,
   TouchableOpacity,
   useColorScheme,
@@ -15,24 +15,42 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Input } from '@/components/ui/Input';
+import { TodoCardSkeleton } from '@/components/ui/Skeleton';
 import { Typography } from '@/components/ui/Typography';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useToast } from '@/providers/ToastProvider';
+import { EditTodoModal } from '../components/EditTodoModal';
 import { TodoCard } from '../components/TodoCard';
 import { type FilterStatus, TodoFilters } from '../components/TodoFilters';
 import { TodoStats } from '../components/TodoStats';
 import { useTodos } from '../hooks/useTodos';
+import type { Todo } from '../types';
 
 export function TodoListScreen() {
   const isDark = useColorScheme() === 'dark';
   const toast = useToast();
   const { user, logout } = useAuth();
-  const { todos, isLoading, isCreating, createTodo, toggleTodo, deleteTodo } = useTodos();
+  const {
+    todos,
+    isLoading,
+    isRefetching,
+    refetch,
+    isCreating,
+    createTodo,
+    updateTodo,
+    isUpdating,
+    toggleTodo,
+    deleteTodo,
+  } = useTodos();
 
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
   const [filter, setFilter] = useState<FilterStatus>('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Modals state
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+  const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleLogoutPress = () => {
@@ -65,7 +83,28 @@ export function TodoListScreen() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleSaveEdit = async (id: string, title: string, description?: string) => {
+    try {
+      await updateTodo({
+        id,
+        input: { title, description },
+      });
+      setEditingTodo(null);
+      toast.showSuccess('Task updated successfully!', 'Saved');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Could not update task';
+      toast.showError(msg, 'Error');
+    }
+  };
+
+  const handleDeletePress = (id: string) => {
+    setDeletingTodoId(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingTodoId) return;
+    const id = deletingTodoId;
+    setDeletingTodoId(null);
     try {
       await deleteTodo(id);
       toast.showInfo('Task has been removed', 'Deleted');
@@ -124,13 +163,26 @@ export function TodoListScreen() {
           data={filteredTodos}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TodoCard todo={item} onToggle={handleToggle} onDelete={handleDelete} />
+            <TodoCard
+              todo={item}
+              onToggle={handleToggle}
+              onDelete={handleDeletePress}
+              onEdit={(todo) => setEditingTodo(todo)}
+            />
           )}
           contentContainerStyle={{
             paddingHorizontal: 20,
             paddingBottom: 40,
           }}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefetching}
+              onRefresh={refetch}
+              tintColor="#3B82F6"
+              colors={['#3B82F6']}
+            />
+          }
           ListHeaderComponent={
             <View style={{ paddingTop: 8, paddingBottom: 12 }}>
               {/* Header Profile & Date */}
@@ -251,8 +303,10 @@ export function TodoListScreen() {
           }
           ListEmptyComponent={
             isLoading ? (
-              <View style={{ paddingVertical: 40, alignItems: 'center' }}>
-                <ActivityIndicator size="large" color="#3B82F6" />
+              <View style={{ gap: 10, paddingTop: 8 }}>
+                <TodoCardSkeleton />
+                <TodoCardSkeleton />
+                <TodoCardSkeleton />
               </View>
             ) : (
               <View
@@ -307,6 +361,27 @@ export function TodoListScreen() {
           }
         />
       </KeyboardAvoidingView>
+
+      {/* Edit Task Modal */}
+      <EditTodoModal
+        visible={!!editingTodo}
+        todo={editingTodo}
+        isLoading={isUpdating}
+        onSave={handleSaveEdit}
+        onClose={() => setEditingTodo(null)}
+      />
+
+      {/* Delete Task Confirmation Dialog */}
+      <ConfirmDialog
+        visible={!!deletingTodoId}
+        title="Delete Task"
+        message="Are you sure you want to delete this task? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        isDestructive
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeletingTodoId(null)}
+      />
 
       {/* Logout Confirmation Dialog */}
       <ConfirmDialog

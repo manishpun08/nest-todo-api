@@ -29,6 +29,14 @@ export function useTodos() {
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: ({ id, input }: { id: string; input: { title: string; description?: string } }) =>
+      todoService.updateTodo(id, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.TODOS_LIST });
+    },
+  });
+
   const deleteMutation = useMutation({
     mutationFn: (id: string) => todoService.deleteTodo(id),
     onSuccess: () => {
@@ -39,11 +47,14 @@ export function useTodos() {
   return {
     todos: todosQuery.data ?? [],
     isLoading: todosQuery.isLoading,
+    isRefetching: todosQuery.isRefetching,
     isError: todosQuery.isError,
     error: todosQuery.error instanceof Error ? todosQuery.error.message : null,
     refetch: todosQuery.refetch,
     createTodo: createMutation.mutateAsync,
     isCreating: createMutation.isPending,
+    updateTodo: updateMutation.mutateAsync,
+    isUpdating: updateMutation.isPending,
     toggleTodo: toggleMutation.mutateAsync,
     deleteTodo: deleteMutation.mutateAsync,
   };
