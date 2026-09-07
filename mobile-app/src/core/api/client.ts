@@ -27,7 +27,6 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response interceptor to unwrap standard response envelope
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     // If backend wrapped in standard envelope, unwrap data or return response
@@ -44,6 +43,23 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       await storage.clearToken();
     }
-    return Promise.reject(error);
+
+    const resData = error.response?.data;
+    let message = 'An unexpected error occurred';
+
+    if (resData) {
+      if (typeof resData.message === 'string') {
+        message = resData.message;
+      } else if (Array.isArray(resData.message)) {
+        message = resData.message.join(', ');
+      } else if (typeof resData.error === 'string') {
+        message = resData.error;
+      }
+    } else if (error.message) {
+      message = error.message;
+    }
+
+    const enhancedError = new Error(message);
+    return Promise.reject(enhancedError);
   },
 );

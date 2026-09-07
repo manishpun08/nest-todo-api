@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { Lock, Mail, User, UserPlus } from 'lucide-react-native';
 import { useState } from 'react';
 import {
@@ -14,6 +15,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Typography } from '@/components/ui/Typography';
+import { useToast } from '@/providers/ToastProvider';
 import { useAuth } from '../hooks/useAuth';
 
 interface RegisterScreenProps {
@@ -21,7 +23,9 @@ interface RegisterScreenProps {
 }
 
 export function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
+  const router = useRouter();
   const isDark = useColorScheme() === 'dark';
+  const toast = useToast();
   const { register, isRegistering, registerError } = useAuth();
 
   const [name, setName] = useState('');
@@ -32,12 +36,16 @@ export function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
   const handleRegister = async () => {
     setValidationError(null);
     if (!name.trim() || !email.trim() || !password) {
-      setValidationError('Please fill in all fields.');
+      const err = 'Please fill in all fields.';
+      setValidationError(err);
+      toast.showError(err);
       return;
     }
 
     if (password.length < 6) {
-      setValidationError('Password must be at least 6 characters long.');
+      const err = 'Password must be at least 6 characters long.';
+      setValidationError(err);
+      toast.showError(err);
       return;
     }
 
@@ -47,8 +55,13 @@ export function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
         email: email.trim(),
         password,
       });
-    } catch {
-      // Handled by mutation state
+      toast.showSuccess('Account created successfully! Welcome aboard.', 'Success');
+      // Redirect to home dashboard
+      router.replace('/');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Registration failed. Please try again.';
+      setValidationError(msg);
+      toast.showError(msg, 'Registration Error');
     }
   };
 

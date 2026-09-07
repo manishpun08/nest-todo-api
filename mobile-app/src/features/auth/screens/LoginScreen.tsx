@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { Lock, LogIn, Mail } from 'lucide-react-native';
 import { useState } from 'react';
 import {
@@ -14,6 +15,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Typography } from '@/components/ui/Typography';
+import { useToast } from '@/providers/ToastProvider';
 import { useAuth } from '../hooks/useAuth';
 
 interface LoginScreenProps {
@@ -21,7 +23,9 @@ interface LoginScreenProps {
 }
 
 export function LoginScreen({ onNavigateToRegister }: LoginScreenProps) {
+  const router = useRouter();
   const isDark = useColorScheme() === 'dark';
+  const toast = useToast();
   const { login, isLoggingIn, loginError } = useAuth();
 
   const [email, setEmail] = useState('');
@@ -31,14 +35,20 @@ export function LoginScreen({ onNavigateToRegister }: LoginScreenProps) {
   const handleLogin = async () => {
     setValidationError(null);
     if (!email.trim() || !password) {
-      setValidationError('Please enter both email and password.');
+      const err = 'Please enter both email and password.';
+      setValidationError(err);
+      toast.showError(err);
       return;
     }
 
     try {
       await login({ email: email.trim(), password });
-    } catch {
-      // Error handled by mutation state
+      toast.showSuccess('Welcome back! Successfully signed in.', 'Success');
+      router.replace('/');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Invalid credentials. Please try again.';
+      setValidationError(msg);
+      toast.showError(msg, 'Authentication Failed');
     }
   };
 

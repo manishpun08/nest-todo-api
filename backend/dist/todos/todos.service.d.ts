@@ -6,38 +6,38 @@ export declare class TodosService {
     private repository;
     constructor(repository: TodosRepository);
     create(createTodoDto: CreateTodoDto): Promise<{
+        id: string;
+        createdAt: Date;
         title: string;
         description: string | null;
         completed: boolean;
-        id: string;
-        createdAt: Date;
     }>;
     findAll(query?: QueryDto): Promise<import("../common/base.repository").PaginatedResult<{
+        id: string;
+        createdAt: Date;
         title: string;
         description: string | null;
         completed: boolean;
-        id: string;
-        createdAt: Date;
     }>>;
     findOne(id: string): Promise<{
+        id: string;
+        createdAt: Date;
         title: string;
         description: string | null;
         completed: boolean;
-        id: string;
-        createdAt: Date;
     }>;
     update(id: string, updateTodoDto: UpdateTodoDto): Promise<{
+        id: string;
+        createdAt: Date;
         title: string;
         description: string | null;
         completed: boolean;
-        id: string;
-        createdAt: Date;
     }>;
     remove(id: string): Promise<{
+        id: string;
+        createdAt: Date;
         title: string;
         description: string | null;
         completed: boolean;
-        id: string;
-        createdAt: Date;
     }>;
 }

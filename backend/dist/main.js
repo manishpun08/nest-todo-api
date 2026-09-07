@@ -21,7 +21,8 @@ async function bootstrap() {
     const reflector = app.get(core_1.Reflector);
     app.useGlobalInterceptors(new transform_response_interceptor_1.TransformResponseInterceptor(reflector));
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
-    await app.listen(process.env.PORT ?? 3000);
+    const port = process.env.PORT ?? 3000;
+    await app.listen(port, '0.0.0.0');
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

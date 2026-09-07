@@ -16,6 +16,7 @@ import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Typography } from '@/components/ui/Typography';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useToast } from '@/providers/ToastProvider';
 import { TodoCard } from '../components/TodoCard';
 import { type FilterStatus, TodoFilters } from '../components/TodoFilters';
 import { TodoStats } from '../components/TodoStats';
@@ -23,6 +24,7 @@ import { useTodos } from '../hooks/useTodos';
 
 export function TodoListScreen() {
   const isDark = useColorScheme() === 'dark';
+  const toast = useToast();
   const { user, logout } = useAuth();
   const { todos, isLoading, isCreating, createTodo, toggleTodo, deleteTodo } = useTodos();
 
@@ -33,12 +35,37 @@ export function TodoListScreen() {
 
   const handleCreate = async () => {
     if (!newTitle.trim()) return;
-    await createTodo({
-      title: newTitle.trim(),
-      description: newDescription.trim() || undefined,
-    });
-    setNewTitle('');
-    setNewDescription('');
+    try {
+      await createTodo({
+        title: newTitle.trim(),
+        description: newDescription.trim() || undefined,
+      });
+      toast.showSuccess('Task added to your list!', 'Task Created');
+      setNewTitle('');
+      setNewDescription('');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Could not create task';
+      toast.showError(msg, 'Error');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteTodo(id);
+      toast.showInfo('Task has been removed', 'Deleted');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Could not delete task';
+      toast.showError(msg, 'Error');
+    }
+  };
+
+  const handleToggle = async (id: string) => {
+    try {
+      await toggleTodo(id);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Could not update task';
+      toast.showError(msg, 'Error');
+    }
   };
 
   // Filtered & Searched Tasks
@@ -81,11 +108,7 @@ export function TodoListScreen() {
           data={filteredTodos}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TodoCard
-              todo={item}
-              onToggle={(id) => toggleTodo(id)}
-              onDelete={(id) => deleteTodo(id)}
-            />
+            <TodoCard todo={item} onToggle={handleToggle} onDelete={handleDelete} />
           )}
           contentContainerStyle={{
             paddingHorizontal: 20,

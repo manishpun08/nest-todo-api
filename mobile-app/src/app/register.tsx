@@ -7,7 +7,11 @@ export default function RegisterRoute() {
   return (
     <RegisterScreen
       onNavigateToLogin={() => {
-        router.back();
+        if (router.canGoBack()) {
+          router.back();
+        } else {
+          router.replace('/');
+        }
       }}
     />
   );
