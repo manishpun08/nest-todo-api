@@ -15,6 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TodosController = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const query_dto_1 = require("../common/query.dto");
+const create_todo_dto_1 = require("./dto/create-todo.dto");
+const update_todo_dto_1 = require("./dto/update-todo.dto");
 const todos_service_1 = require("./todos.service");
 let TodosController = class TodosController {
     todosService;
@@ -43,14 +46,14 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Function]),
+    __metadata("design:paramtypes", [create_todo_dto_1.CreateTodoDto]),
     __metadata("design:returntype", void 0)
 ], TodosController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Function]),
+    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
 ], TodosController.prototype, "findAll", null);
 __decorate([
@@ -65,7 +68,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Function]),
+    __metadata("design:paramtypes", [String, update_todo_dto_1.UpdateTodoDto]),
     __metadata("design:returntype", void 0)
 ], TodosController.prototype, "update", null);
 __decorate([

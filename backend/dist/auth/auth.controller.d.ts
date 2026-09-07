@@ -1,13 +1,13 @@
 import type { User } from '../../generated/prisma';
 import { AuthService } from './auth.service';
-import type { RegisterDto } from './dto/register.dto';
+import { RegisterDto } from './dto/register.dto';
 export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
     register(registerDto: RegisterDto): Promise<{
         name: string;
-        email: string;
         id: string;
+        email: string;
         createdAt: Date;
     }>;
     login(req: {

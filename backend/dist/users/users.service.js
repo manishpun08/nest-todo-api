@@ -55,10 +55,12 @@ let UsersService = class UsersService {
     }
     async create(createUserDto) {
         try {
-            const { password, ...userData } = createUserDto;
+            const { password, name, ...userData } = createUserDto;
+            const userName = name && name.trim().length > 0 ? name.trim() : createUserDto.email.split('@')[0];
             const hashedPassword = await bcrypt.hash(password, 10);
             const result = await this.repository.create({
                 ...userData,
+                name: userName,
                 password: hashedPassword,
             });
             const { password: _p, refreshToken: _rt, ...user } = result;

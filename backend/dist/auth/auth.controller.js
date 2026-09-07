@@ -16,6 +16,7 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const entity_decorator_1 = require("../common/decorators/entity.decorator");
 const auth_service_1 = require("./auth.service");
+const register_dto_1 = require("./dto/register.dto");
 const jwt_auth_guard_1 = require("./guards/jwt-auth.guard");
 const local_auth_guard_1 = require("./guards/local-auth.guard");
 const refresh_token_guard_1 = require("./guards/refresh-token.guard");
@@ -45,7 +46,7 @@ __decorate([
     (0, entity_decorator_1.Entity)('User'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Function]),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([

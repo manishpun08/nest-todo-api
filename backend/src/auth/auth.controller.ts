@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, Post, Request, UseGuards } from '@nest
 import type { User } from '../../generated/prisma';
 import { Entity, Message } from '../common/decorators/entity.decorator';
 import { AuthService } from './auth.service';
-import type { RegisterDto } from './dto/register.dto';
+import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';

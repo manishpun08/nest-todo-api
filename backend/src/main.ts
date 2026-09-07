@@ -7,6 +7,15 @@ import { TransformResponseInterceptor } from './transform-response/transform-res
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Enable CORS for web and mobile clients
+  app.enableCors({
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

@@ -19,7 +19,11 @@ export function useTodos() {
   });
 
   const toggleMutation = useMutation({
-    mutationFn: (id: string) => todoService.toggleTodo(id),
+    mutationFn: (id: string) => {
+      const todo = (todosQuery.data ?? []).find((t) => t.id === id);
+      const isCompleted = todo ? !todo.isCompleted : true;
+      return todoService.toggleTodo(id, isCompleted);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.TODOS_LIST });
     },

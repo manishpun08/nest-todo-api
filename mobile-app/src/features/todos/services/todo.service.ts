@@ -26,13 +26,15 @@ export const todoService = {
     const response = await apiClient.patch<TodoDTO>(API_ENDPOINTS.TODOS.BY_ID(id), {
       title: input.title,
       description: input.description,
-      is_completed: input.isCompleted,
+      completed: input.isCompleted,
     });
     return mapTodoDTO(response.data);
   },
 
-  toggleTodo: async (id: string): Promise<Todo> => {
-    const response = await apiClient.patch<TodoDTO>(API_ENDPOINTS.TODOS.TOGGLE(id));
+  toggleTodo: async (id: string, isCompleted: boolean): Promise<Todo> => {
+    const response = await apiClient.patch<TodoDTO>(API_ENDPOINTS.TODOS.BY_ID(id), {
+      completed: isCompleted,
+    });
     return mapTodoDTO(response.data);
   },
 

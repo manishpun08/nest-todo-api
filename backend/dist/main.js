@@ -8,6 +8,12 @@ const http_exception_filter_1 = require("./common/http-exception.filter");
 const transform_response_interceptor_1 = require("./transform-response/transform-response.interceptor");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    app.enableCors({
+        origin: true,
+        credentials: true,
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+    });
     app.useGlobalPipes(new common_1.ValidationPipe({
         transform: true,
         transformOptions: { enableImplicitConversion: true },

@@ -15,6 +15,9 @@ let HttpExceptionFilter = class HttpExceptionFilter {
         const response = ctx.getResponse();
         const request = ctx.getRequest();
         const status = exception instanceof common_1.HttpException ? exception.getStatus() : common_1.HttpStatus.INTERNAL_SERVER_ERROR;
+        if (status === common_1.HttpStatus.INTERNAL_SERVER_ERROR) {
+            console.error('Unhandled Exception in HttpExceptionFilter:', exception);
+        }
         const message = this.getMessage(exception, status);
         response.status(status).json({
             success: false,

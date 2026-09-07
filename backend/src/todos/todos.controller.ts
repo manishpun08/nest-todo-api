@@ -11,9 +11,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import type { QueryDto } from '../common/query.dto';
-import type { CreateTodoDto } from './dto/create-todo.dto';
-import type { UpdateTodoDto } from './dto/update-todo.dto';
+import { QueryDto } from '../common/query.dto';
+import { CreateTodoDto } from './dto/create-todo.dto';
+import { UpdateTodoDto } from './dto/update-todo.dto';
 import { TodosService } from './todos.service';
 
 @Controller('todos')

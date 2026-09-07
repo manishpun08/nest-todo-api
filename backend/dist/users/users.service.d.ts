@@ -8,15 +8,15 @@ export declare class UsersService {
     constructor(repository: UsersRepository);
     create(createUserDto: CreateUserDto): Promise<{
         name: string;
-        email: string;
         id: string;
+        email: string;
         createdAt: Date;
     }>;
     findAll(query?: QueryDto): Promise<{
         items: {
             name: string;
-            email: string;
             id: string;
+            email: string;
             createdAt: Date;
         }[];
         meta: {
@@ -28,31 +28,31 @@ export declare class UsersService {
     }>;
     findOne(id: string): Promise<{
         name: string;
-        email: string;
         id: string;
+        email: string;
         createdAt: Date;
     }>;
     findById(id: string): Promise<User | null>;
     findByEmail(email: string): Promise<User | null>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
         name: string;
-        email: string;
         id: string;
+        email: string;
         createdAt: Date;
     }>;
     remove(id: string): Promise<{
         name: string;
+        id: string;
         email: string;
         password: string;
-        id: string;
         refreshToken: string | null;
         createdAt: Date;
     }>;
     updateRefreshToken(userId: string, refreshToken: string | null): Promise<{
         name: string;
+        id: string;
         email: string;
         password: string;
-        id: string;
         refreshToken: string | null;
         createdAt: Date;
     }>;
