@@ -31,7 +31,8 @@ export default function RootLayout() {
           <ToastProvider>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
               <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
-                <Stack.Screen name="index" options={{ title: 'Tasks' }} />
+                <Stack.Screen name="index" options={{ title: 'Root' }} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="onboarding" options={{ title: 'Welcome', animation: 'fade' }} />
                 <Stack.Screen
                   name="login"

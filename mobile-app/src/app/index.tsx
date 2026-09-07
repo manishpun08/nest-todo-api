@@ -1,10 +1,9 @@
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { storage } from '@/core/storage/storage';
 import { LoginScreen } from '@/features/auth';
 import { OnboardingScreen } from '@/features/onboarding';
-import { TodoListScreen } from '@/features/todos';
 import { useAuthContext } from '@/providers/AuthProvider';
 
 export default function HomeScreen() {
@@ -51,6 +50,6 @@ export default function HomeScreen() {
     );
   }
 
-  // 3. Authenticated -> Tasks Dashboard
-  return <TodoListScreen />;
+  // 3. Authenticated -> Bottom Tabs Dashboard
+  return <Redirect href="/(tabs)" />;
 }

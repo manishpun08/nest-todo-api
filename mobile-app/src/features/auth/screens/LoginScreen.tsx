@@ -44,7 +44,7 @@ export function LoginScreen({ onNavigateToRegister }: LoginScreenProps) {
     try {
       await login({ email: email.trim(), password });
       toast.showSuccess('Welcome back! Successfully signed in.', 'Success');
-      router.replace('/');
+      router.replace('/(tabs)');
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Invalid credentials. Please try again.';
       setValidationError(msg);

@@ -56,8 +56,8 @@ export function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
         password,
       });
       toast.showSuccess('Account created successfully! Welcome aboard.', 'Success');
-      // Redirect to home dashboard
-      router.replace('/');
+      // Redirect to main tabs dashboard
+      router.replace('/(tabs)');
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Registration failed. Please try again.';
       setValidationError(msg);
