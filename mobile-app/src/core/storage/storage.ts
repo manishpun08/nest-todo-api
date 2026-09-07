@@ -2,8 +2,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TOKEN_KEY = '@todo_app:auth_token';
 const USER_KEY = '@todo_app:user_data';
+const ONBOARDING_KEY = '@todo_app:has_completed_onboarding';
 
 export const storage = {
+  async getHasCompletedOnboarding(): Promise<boolean> {
+    try {
+      const val = await AsyncStorage.getItem(ONBOARDING_KEY);
+      return val === 'true';
+    } catch {
+      return false;
+    }
+  },
+
+  async setHasCompletedOnboarding(completed = true): Promise<void> {
+    try {
+      await AsyncStorage.setItem(ONBOARDING_KEY, completed ? 'true' : 'false');
+    } catch (error) {
+      console.error('Failed to save onboarding state', error);
+    }
+  },
   async getToken(): Promise<string | null> {
     try {
       return await AsyncStorage.getItem(TOKEN_KEY);

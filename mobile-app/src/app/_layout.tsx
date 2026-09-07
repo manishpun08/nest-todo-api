@@ -21,8 +21,17 @@ export default function RootLayout() {
       <QueryProvider>
         <AuthProvider>
           <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <Stack screenOptions={{ headerShown: false }}>
+            <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
               <Stack.Screen name="index" options={{ title: 'Tasks' }} />
+              <Stack.Screen name="onboarding" options={{ title: 'Welcome', animation: 'fade' }} />
+              <Stack.Screen
+                name="login"
+                options={{ title: 'Sign In', animation: 'slide_from_right' }}
+              />
+              <Stack.Screen
+                name="register"
+                options={{ title: 'Create Account', animation: 'slide_from_right' }}
+              />
             </Stack>
           </ThemeProvider>
         </AuthProvider>

@@ -1,6 +1,6 @@
-import { TouchableOpacity, View } from 'react-native';
+import { Check, Trash2 } from 'lucide-react-native';
+import { Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Card } from '@/components/ui/Card';
-import { Typography } from '@/components/ui/Typography';
 import type { Todo } from '../types';
 
 interface TodoCardProps {
@@ -10,45 +10,97 @@ interface TodoCardProps {
 }
 
 export function TodoCard({ todo, onToggle, onDelete }: TodoCardProps) {
+  const isDark = useColorScheme() === 'dark';
+
   return (
-    <Card className="mb-3">
-      <View className="flex-row items-center justify-between">
+    <Card
+      style={{
+        marginBottom: 10,
+        padding: 14,
+        borderLeftWidth: 4,
+        borderLeftColor: todo.isCompleted ? '#10B981' : '#3B82F6',
+      }}
+    >
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        {/* Toggle + Content */}
         <TouchableOpacity
           onPress={() => onToggle(todo.id)}
-          className="flex-row items-center flex-1 mr-2"
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            flex: 1,
+            marginRight: 10,
+          }}
           activeOpacity={0.7}
         >
+          {/* Circular Checkbox */}
           <View
-            className={`w-6 h-6 rounded-full border items-center justify-center mr-3 ${
-              todo.isCompleted ? 'bg-blue-600 border-blue-600' : 'border-slate-400 bg-transparent'
-            }`}
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: 12,
+              borderWidth: 2,
+              borderColor: todo.isCompleted ? '#10B981' : isDark ? '#64748B' : '#94A3B8',
+              backgroundColor: todo.isCompleted ? '#10B981' : 'transparent',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: 12,
+            }}
           >
-            {todo.isCompleted && (
-              <Typography className="text-white text-xs font-bold">✓</Typography>
-            )}
+            {todo.isCompleted ? <Check size={14} color="#FFFFFF" strokeWidth={3} /> : null}
           </View>
-          <View className="flex-1">
-            <Typography
-              variant="body"
-              className={`font-semibold ${
-                todo.isCompleted ? 'line-through text-slate-400 dark:text-slate-500' : ''
-              }`}
+
+          {/* Title & Description */}
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: '600',
+                color: todo.isCompleted
+                  ? isDark
+                    ? '#64748B'
+                    : '#94A3B8'
+                  : isDark
+                    ? '#FFFFFF'
+                    : '#0F172A',
+                textDecorationLine: todo.isCompleted ? 'line-through' : 'none',
+              }}
             >
               {todo.title}
-            </Typography>
+            </Text>
+
             {todo.description ? (
-              <Typography variant="caption" className="mt-0.5" numberOfLines={2}>
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: isDark ? '#94A3B8' : '#64748B',
+                  marginTop: 2,
+                }}
+                numberOfLines={2}
+              >
                 {todo.description}
-              </Typography>
+              </Text>
             ) : null}
           </View>
         </TouchableOpacity>
+
+        {/* Delete Action Button */}
         <TouchableOpacity
           onPress={() => onDelete(todo.id)}
-          className="p-2 rounded-lg bg-red-50 dark:bg-red-950/30"
+          style={{
+            padding: 8,
+            borderRadius: 10,
+            backgroundColor: isDark ? 'rgba(239, 68, 68, 0.15)' : '#FEF2F2',
+          }}
           activeOpacity={0.7}
         >
-          <Typography className="text-red-600 text-xs font-medium">Delete</Typography>
+          <Trash2 size={16} color="#EF4444" strokeWidth={2} />
         </TouchableOpacity>
       </View>
     </Card>

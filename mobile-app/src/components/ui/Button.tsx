@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   type TouchableOpacityProps,
+  View,
 } from 'react-native';
 
 interface ButtonProps extends TouchableOpacityProps {
@@ -21,20 +22,21 @@ export function Button({
   className = '',
   disabled,
   icon,
+  style,
   ...props
 }: ButtonProps) {
   const getVariantButtonStyles = () => {
     switch (variant) {
       case 'primary':
-        return 'bg-blue-600 active:bg-blue-700 text-white';
+        return 'bg-blue-600 active:bg-blue-700';
       case 'secondary':
-        return 'bg-slate-100 active:bg-slate-200 dark:bg-slate-800 dark:active:bg-slate-700 text-slate-900 dark:text-white';
+        return 'bg-slate-100 active:bg-slate-200 dark:bg-slate-800 dark:active:bg-slate-700';
       case 'outline':
-        return 'border border-slate-300 dark:border-slate-700 bg-transparent text-slate-800 dark:text-slate-200';
+        return 'border border-slate-300 dark:border-slate-700 bg-transparent';
       case 'danger':
-        return 'bg-red-600 active:bg-red-700 text-white';
+        return 'bg-red-600 active:bg-red-700';
       default:
-        return 'bg-blue-600 active:bg-blue-700 text-white';
+        return 'bg-blue-600 active:bg-blue-700';
     }
   };
 
@@ -46,7 +48,7 @@ export function Button({
       case 'secondary':
         return 'text-slate-900 dark:text-white font-medium text-center';
       case 'outline':
-        return 'text-slate-800 dark:text-slate-200 font-medium text-center';
+        return 'text-blue-600 dark:text-blue-400 font-medium text-center';
       default:
         return 'text-white font-semibold text-center';
     }
@@ -54,9 +56,22 @@ export function Button({
 
   return (
     <TouchableOpacity
-      className={`flex-row items-center justify-center py-3.5 px-5 rounded-xl shadow-sm ${getVariantButtonStyles()} ${
+      className={`flex-row items-center justify-center py-4 px-6 rounded-2xl ${getVariantButtonStyles()} ${
         disabled || isLoading ? 'opacity-60' : ''
       } ${className}`}
+      style={[
+        {
+          backgroundColor:
+            variant === 'primary' ? '#2563EB' : variant === 'danger' ? '#DC2626' : undefined,
+          borderRadius: 16,
+          paddingVertical: 14,
+          paddingHorizontal: 24,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        style,
+      ]}
       disabled={disabled || isLoading}
       activeOpacity={0.8}
       {...props}
@@ -67,8 +82,18 @@ export function Button({
         />
       ) : (
         <>
-          {icon && <span className="mr-2">{icon}</span>}
-          <Text className={`text-base ${getVariantTextStyles()}`}>{label}</Text>
+          {icon && <View style={{ marginRight: 8 }}>{icon}</View>}
+          <Text
+            className={`text-base ${getVariantTextStyles()}`}
+            style={{
+              color: variant === 'primary' || variant === 'danger' ? '#FFFFFF' : '#2563EB',
+              fontSize: 16,
+              fontWeight: '600',
+              textAlign: 'center',
+            }}
+          >
+            {label}
+          </Text>
         </>
       )}
     </TouchableOpacity>
